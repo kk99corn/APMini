@@ -3,11 +3,9 @@
   "name": "APMini",
   "version": "1.4",
   "description": "TTFB, DOM Ready, Load 지표를 측정하고 오버레이로 표시합니다.",
-  "permissions": ["scripting"],
-  "host_permissions": ["<all_urls>"],
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
+      "matches": ["http://*/*", "https://*/*"],
       "js": ["content.js"],
       "run_at": "document_idle"
     }
