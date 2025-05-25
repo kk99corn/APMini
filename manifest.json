@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Minimal APM Overlay",
+  "name": "APMini",
   "version": "1.4",
-  "description": "TTFB, DOM Ready, Total Size, 실시간 네트워크 사용량을 최대한 근접하게 측정하고 누락 항목을 추정 보완하여 오버레이로 표시합니다.",
-  "permissions": ["scripting", "storage"],
+  "description": "TTFB, DOM Ready, Load 지표를 측정하고 오버레이로 표시합니다.",
+  "permissions": ["scripting"],
   "host_permissions": ["<all_urls>"],
   "content_scripts": [
     {
