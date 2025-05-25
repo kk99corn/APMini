@@ -13,11 +13,49 @@ overlay.style.borderRadius = "8px";
 // overlay.style.pointerEvents = "none";
 overlay.style.boxShadow = "0 0 5px rgba(0,0,0,0.5)";
 document.body.appendChild(overlay);
+overlay.innerHTML = "🔄 Loading..."; // 추가된 라인
+
+// Helper functions
+function getCurrentDomain() {
+    return window.location.hostname;
+}
+
+function setCookie(name, value, days) {
+    let expires = "";
+    if (days) {
+        const date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+function getCookie(name) {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+}
+
+// Set initial overlay state from cookie
+const domain = getCurrentDomain();
+const cookieName = `apm_overlay_status_${domain}`;
+const overlayStatus = getCookie(cookieName);
+if (overlayStatus === 'hidden') {
+    overlay.style.display = 'none';
+}
 
 // X 버튼 클릭 이벤트 리스너 (이벤트 위임 방식)
 overlay.addEventListener('click', function(event) {
     if (event.target.id === 'apm_close_btn') {
         overlay.style.display = 'none';
+        const domain = getCurrentDomain(); // 추가
+        const cookieName = `apm_overlay_status_${domain}`; // 추가
+        setCookie(cookieName, 'hidden', 365); // 추가
     }
 });
 
@@ -85,12 +123,16 @@ window.addEventListener("load", () => {
 document.addEventListener('keydown', function(event) {
     // event.key가 'q' 또는 'Q' 이고, event.ctrlKey가 true일 때
     if (event.key.toLowerCase() === 'q' && event.ctrlKey) {
+        const domain = getCurrentDomain();
+        const cookieName = `apm_overlay_status_${domain}`;
         // 오버레이의 현재 display 상태 확인
         if (overlay.style.display === 'none') {
             overlay.style.display = ''; // 기본값으로 되돌리거나 'block' 등으로 명시적 설정
+            setCookie(cookieName, 'visible', 365);
             // 초기 스타일 설정 시 display를 명시하지 않았으므로 ''로 하면 기본값(block 등)으로 복원됨
         } else {
             overlay.style.display = 'none';
+            setCookie(cookieName, 'hidden', 365);
         }
         // 기본 브라우저 단축키 동작 방지 (예: Ctrl+Q가 브라우저 종료 등)
         event.preventDefault();
